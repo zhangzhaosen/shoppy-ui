@@ -3,7 +3,7 @@
 import MuiNextLink from "@/components/MuiNextLink";
 import { Button, Link, Stack, TextField } from "@mui/material";
 import NextLink from 'next/link'
-import login from "./login";
+import {login} from "./login";
 import { useActionState } from "react";
 export default function Login() {
 
