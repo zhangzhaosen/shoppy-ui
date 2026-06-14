@@ -4,7 +4,7 @@ import { getErrorMessage } from "./errors"
 
 const getHeaders = async()=>{
   return {
-    Cookie: await cookies().toString()
+    Cookie: (await cookies()).toString()
   }
 }
 
