@@ -17,10 +17,12 @@ import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket'
 import { useContext } from 'react';
 import { AuthContext } from '../auth/auth-context';
 import { routes, unauthenicatedRoutes } from '../common/constants/routes';
-// const pages = ['Products', 'Pricing', 'Blog'];
-// const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-
-export function Header() {
+import Link from 'next/link'
+import { useRouter } from 'next/navigation';
+interface HeaderPrps{
+  logout: ()=>Promise<void>
+}
+export function Header({logout}: HeaderPrps) {
 
   const isAuthenticated = useContext(AuthContext);
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -33,6 +35,8 @@ export function Header() {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
+
+  const router = useRouter()
 
   const pages = isAuthenticated ? routes: unauthenicatedRoutes
 
@@ -89,7 +93,10 @@ export function Header() {
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page.title} onClick={handleCloseNavMenu}>
+                <MenuItem key={page.title} onClick={()=>{
+                  handleCloseNavMenu()
+                  router.push(page.path)
+                }}>
                   <Typography sx={{ textAlign: 'center' }}>{page.title}</Typography>
                 </MenuItem>
               ))}
@@ -99,8 +106,8 @@ export function Header() {
           <Typography
             variant="h5"
             noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
+            component={Link}
+            href="/"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -118,21 +125,25 @@ export function Header() {
             {pages.map((page) => (
               <Button
                 key={page.title}
-                onClick={handleCloseNavMenu}
+                onClick={async ()=>{
+                
+                  router.push(page.path)
+                  handleCloseNavMenu()
+                }}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page.title}
               </Button>
             ))}
           </Box>
-          {isAuthenticated && <Settings />}
+          {isAuthenticated && <Settings logout={logout} />}
         </Toolbar>
       </Container>
     </AppBar>
   );
 }
 
-const Settings = () => {
+const Settings = ({logout}: HeaderPrps) => {
 
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -165,7 +176,11 @@ const Settings = () => {
       onClose={handleCloseUserMenu}
     >
      
-        <MenuItem key={'Logout'} onClick={handleCloseUserMenu}>
+        <MenuItem key={'Logout'} onClick={async ()=>{
+            debugger
+           await logout()
+           handleCloseUserMenu()
+        }}>
           <Typography sx={{ textAlign: 'center' }}>Logout</Typography>
         </MenuItem>
       

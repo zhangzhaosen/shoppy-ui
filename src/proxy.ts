@@ -1,10 +1,10 @@
 import { NextRequest } from "next/server";
-
-const unauthorizedRoutes = ['/auth/login', '/auth/signup']
-export function proxy(request : NextRequest){
+import authenticated from "./app/auth/authenticated";
+import { unauthenicatedRoutes } from "./app/common/constants/routes";
+export async function proxy(request : NextRequest){
   console.log('proxy.....')
-  const auth = request.cookies.get('Authentication')?.value
-  if(!auth && !unauthorizedRoutes.includes(request.nextUrl.pathname)){
+  const auth = await authenticated() 
+  if(!auth && !unauthenicatedRoutes.some((route) =>  request.nextUrl.pathname.startsWith(route.path))){
     return Response.redirect( new URL('/auth/login', request.url))
   }
 }

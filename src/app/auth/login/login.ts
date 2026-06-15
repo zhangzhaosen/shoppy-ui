@@ -7,6 +7,7 @@ import { getErrorMessage } from "@/app/common/util/errors"
 import { post } from "@/app/common/util/fetch"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
+import { AUTHENTICATION_COOKIE } from "../auth-cookie";
 
 export async function login(
   _prevState: FormError,
@@ -30,7 +31,7 @@ export async function login(
     const token = setCookieHeader.split(";")[0].split("=")[1];
     console.log('setAuthCookie', token);
     (await cookies()).set({
-      name: "Authentication",
+      name: AUTHENTICATION_COOKIE,
       value: token,
       httpOnly: true,
       secure: true,
