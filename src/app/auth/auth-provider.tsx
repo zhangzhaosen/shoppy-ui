@@ -1,13 +1,17 @@
-"use client";
+'use client'
 
-import { ReactElement } from "react";
 import { AuthContext } from "./auth-context";
 
-interface AuthProviderProps {
-  children: ReactElement | ReactElement[];
-  value: boolean;
+interface AuthProviderProps{
+  children: React.ReactNode, 
+  authenticated: boolean
 }
 
-export function AuthProvider({ children, value }: AuthProviderProps) {
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+export function AuthProvider({children, authenticated}: AuthProviderProps){
+
+  return (
+    <AuthContext.Provider value={authenticated}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
