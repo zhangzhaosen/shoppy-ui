@@ -2,29 +2,32 @@ import { cookies } from "next/headers"
 import { API_URL } from "../constants/api"
 import { getErrorMessage } from "./errors"
 
-export const getHeaders = async()=>{
+export const getHeaders = async () => {
   return {
     Cookie: (await cookies()).toString()
   }
 }
 
-export const post = async (path: string, formData: FormData)=>{
-  const  res = await fetch(`${API_URL}/${path}`, {
-      method: "POST",
-      headers: {"Content-Type": "application/json", ...await getHeaders()},
-      body: JSON.stringify(Object.fromEntries(formData)),
-    })
+export const post = async (path: string, data: FormData | object) => {
   
-    const parsedRes = await res.json()
+  const body = data instanceof FormData ? Object.fromEntries(data): data
   
-    if(!res.ok){
-      console.log('parsedRes', parsedRes)
-      return {error: getErrorMessage(parsedRes)}
-    }
-    return {error: "", data: parsedRes}
+  const res = await fetch(`${API_URL}/${path}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...await getHeaders() },
+    body: JSON.stringify(body),
+  })
+
+  const parsedRes = await res.json()
+
+  if (!res.ok) {
+    console.log('parsedRes', parsedRes)
+    return { error: getErrorMessage(parsedRes) }
+  }
+  return { error: "", data: parsedRes }
 }
 
-export const get = async <T>(path:string, tags?: string[])=>{
+export const get = async <T>(path: string, tags?: string[]) => {
   const res = await fetch(`${API_URL}/${path}`, {
     headers: await getHeaders(),
     next: {
