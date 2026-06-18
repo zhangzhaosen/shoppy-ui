@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
      dangerouslyAllowLocalIP: true,
     remotePatterns: [
       {
+        protocol: 'https',
         hostname: process.env.PRODUCT_IMAGE_HOST!,
       
         pathname: '/images/products/**',
